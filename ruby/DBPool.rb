@@ -30,6 +30,7 @@ class DBPool
   @m=nil
   @t=nil
   @isobs=0
+  @isshutdown=0
   def  initialize()
   puts "Instance created..."
   @DBlist=Hash.new
@@ -42,20 +43,22 @@ class DBPool
   retval= createDBList(ipaddr,port,dbname,username,passwd)
   if retval ==0
   puts "created "+@DBCount.to_s+" database connection string.."
+  observeDBList()
   else
     dbClose()
   end
-  observeDBList()
   return retval
   end
 
   def  dbClose
-     @DBlist.each_pair do |key,value|
+   @isshutdown=1
+   threadJoin()
+   @isobs=0  #finish observe
+   
+   @DBlist.each_pair do |key,value| 
      @DBlist[key].db().close
      @DBlist[key].isused=(0)
-     end   #do
-   threadJoin()
-   @isobs=0
+   end   #do, finish connection
    puts "Close all DB access strings..."
    end
 
@@ -72,7 +75,6 @@ class DBPool
  isok=1
  dbobj=DBObj.new(isused,isok,db)
  @DBlist[no]=dbobj
- # @DBlist.store(no,dbobj)
  no+=1
  end #while
  puts "end createDBList"
@@ -137,10 +139,13 @@ class DBPool
    @t=Thread.new{
    @isobs=1
    while !$requestedToShutDown
+      if @isshutdown ==1
+        return 
+      end
       @m.synchronize{
       puts "process ObserveDBList"
       @DBlist.each_pair do |key,value|
-
+       puts "No.:"+key.to_s+",isused:"+value.isused().to_s+",isok:"+value.isok().to_s
        end #do
       }
        sleep 100
@@ -204,17 +209,17 @@ end
 
 puts "go on..."
 
-#f3.exec( "SELECT title,start_time FROM  songs " ) do |result|
-#    puts "     title | start_time    "
-#  result.each do |row|
-#    puts " %s | %-16s " %
-#      row.values_at('title', 'start_time')
-#  end
-#end
+f3.exec( "SELECT name,department_id FROM  luowq " ) do |result|
+    puts "     title | start_time    "
+  result.each do |row|
+    puts " %s | %-16s " %
+      row.values_at('title', 'start_time')
+    end
+    end
 
 
 f2.releaseConn()
 #f1.dbClose()
-f1.threadJoin()
-
+#f1.threadJoin()
+puts "over..."
 return
