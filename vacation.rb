@@ -35,7 +35,7 @@ end
 
 
 get '/vacations/json' do
-  str='{"page":1,"total":239,"rows":[{"id":"jake","cell":["jakeiiiiiiiiiiiiiiiiiiiii","1/8/2013","3/8/2013","some reason","old"]}]}'   
+  str='{"page":1,"total":239,"rows":[{"id":"jake","cell":["jake","1/8/2013","3/8/2013","some reason","old"]}]}'   
   str
 
 

@@ -45,6 +45,7 @@ def set_title
   @title ||= "A Simple Vacation Manager System "
 end
 
+#模块调试中
 def send_message
 Pony.mail({
     :from => params[:name] + "<" + params[:email] + ">",
@@ -58,7 +59,7 @@ Pony.mail({
       :port                  => '587',
       :enable_starttls_auto  => true,
       :user_name             => 'garfieldlinux',
-      :password              => 'mzlinux863554',
+      :password              => 'passwd',
       :authentication        => :plain,
       :domain                => 'localhost.localdomain'
     }
@@ -69,6 +70,8 @@ before do
   set_title
 end
 
+
+#请求响应的页面目前及其简单 需要jquery 以及CSS 修饰 
 get '/' do
   Log("to  log") 
   slim :home
@@ -108,12 +111,16 @@ post '/contact' do
 end
 
 post '/login' do
+
+
  # if params[:username] == settings.username && params[:password] == settings.password
  #   session[:admin] = true
  #   redirect to('/songs')
  # else
  #   slim :login
  # end
+
+
 # AD  server 
 user = ActiveDirectoryUser.authenticate(params[:username], params[:password]) #attempt to authenticate
 if !user.nil? && user.member_of?
