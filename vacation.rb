@@ -33,7 +33,7 @@ get '/vacations' do
   slim :vacations
 end
 
-
+#数据模拟 
 get '/vacations/json' do
   str='{"page":1,"total":239,"rows":[{"id":"jake","cell":["jake","1/8/2013","3/8/2013","some reason","old"]}]}'   
   str
